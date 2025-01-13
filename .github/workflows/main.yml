@@ -22,8 +22,9 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: 'temurin'
 
-      # Step 3: Build the Spring Boot application
+      # Step 3: Build the Spring Boot application using Maven
       - name: Build with Maven
         run: mvn clean package
 
