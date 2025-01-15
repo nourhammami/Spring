@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-      tools {
-        maven 'Default Maven' 
-          docker 'Default Docker' // Use the Maven installation name you configured
+    tools {
+        maven 'Default Maven' // Use the Maven installation name you configured
     }
+
     environment {
         IMAGE_NAME = 'nour502/spring-app'
     }
@@ -12,12 +12,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
+                // Checkout code from SCM
                 checkout scm
             }
         }
 
         stage('Build with Maven') {
             steps {
+                // Build the Spring Boot application with Maven
                 sh 'mvn clean package'
             }
         }
@@ -40,7 +42,7 @@ pipeline {
 
         stage('Deploy Application') {
             steps {
-                // Deploy the application
+                // Deploy the Docker container
                 sh 'docker stop spring-app || true'
                 sh 'docker rm spring-app || true'
                 sh "docker run -d --name spring-app -p 8080:8080 ${IMAGE_NAME}:latest"
@@ -50,6 +52,7 @@ pipeline {
 
     post {
         always {
+            // Clean up the workspace
             cleanWs()
         }
     }
