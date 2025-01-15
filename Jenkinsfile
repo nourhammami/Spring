@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+      tools {
+        maven 'Default Maven' 
+          docker 'Default Docker' // Use the Maven installation name you configured
+    }
     environment {
         IMAGE_NAME = 'nour502/spring-app'
     }
