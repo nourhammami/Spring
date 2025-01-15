@@ -33,10 +33,14 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                // Push the Docker image to Docker Hub
-                sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
-                sh "docker push ${IMAGE_NAME}:latest"
+                script {
+                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+                        // Push the Docker image to Docker Hub
+                        sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                        sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
+                        sh "docker push ${IMAGE_NAME}:latest"
+                    }
+                }
             }
         }
 
