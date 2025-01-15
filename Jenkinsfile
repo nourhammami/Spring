@@ -1,61 +1,54 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Default Maven' // Use the Maven name you configured in Jenkins
-    }
-
     environment {
         IMAGE_NAME = 'nour502/spring-app'
-        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
+                // Checkout the code from your repository
                 checkout scm
             }
         }
 
-        stage('Build and Test') {
+        stage('Build with Maven') {
             steps {
+                // Build the Spring Boot application using Maven
                 sh 'mvn clean package'
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
-                }
+                // Build the Docker image using the Dockerfile in the repository
+                sh "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
             }
         }
 
-        stage('Docker Push') {
+        stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry(DOCKER_REGISTRY, 'dockerhub-credentials-id') {
-                        sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                        sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
-                        sh "docker push ${IMAGE_NAME}:latest"
-                    }
-                }
+                // Push the Docker image to Docker Hub
+                sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
+                sh "docker push ${IMAGE_NAME}:latest"
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Application') {
             steps {
-                script {
-                    sh 'docker stop spring-app || true'
-                    sh 'docker rm spring-app || true'
-                    sh "docker run -d --name spring-app -p 8080:8080 ${IMAGE_NAME}:latest"
-                }
+                // Deploy the application using the Docker image
+                sh 'docker stop spring-app || true'
+                sh 'docker rm spring-app || true'
+                sh "docker run -d --name spring-app -p 8080:8080 ${IMAGE_NAME}:latest"
             }
         }
     }
 
     post {
         always {
+            // Clean up workspace after the pipeline run
             cleanWs()
         }
     }
