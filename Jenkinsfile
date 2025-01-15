@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Default Maven'  // Use the Maven installation name you configured
-    }
-
     environment {
         IMAGE_NAME = 'nour502/spring-app'
     }
@@ -18,7 +14,6 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                // Use Maven to build the application
                 sh 'mvn clean package'
             }
         }
