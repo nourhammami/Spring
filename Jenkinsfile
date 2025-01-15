@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'your-dockerhub-username/spring-app'
+        IMAGE_NAME = 'nour502/spring-app'
         DOCKER_REGISTRY = 'https://index.docker.io/v1/'
     }
 
