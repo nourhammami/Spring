@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'nour502/spring-app'
+        DOCKER_USERNAME = 'nour502' // Hardcoded Docker Hub username
+        DOCKER_PASSWORD = 'nourBF98?' // Hardcoded Docker Hub password
     }
 
     stages {
@@ -34,12 +36,14 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
-                        // Push the Docker image to Docker Hub
-                        sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                        sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
-                        sh "docker push ${IMAGE_NAME}:latest"
-                    }
+                    // Authenticate to Docker Hub
+                    sh '''
+                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+                    '''
+                    // Push the Docker image to Docker Hub
+                    sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
+                    sh "docker push ${IMAGE_NAME}:latest"
                 }
             }
         }
