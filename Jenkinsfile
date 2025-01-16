@@ -48,14 +48,15 @@ pipeline {
             }
         }
 
-        stage('Deploy Application') {
-            steps {
-                // Deploy the Docker container
-                sh 'docker stop spring-app || true'
-                sh 'docker rm spring-app || true'
-                sh "docker run -d --name spring-app -p 8080:8080 ${IMAGE_NAME}:latest"
-            }
-        }
+       stage('Deploy Application') {
+    steps {
+        // Deploy the Docker container
+        sh 'docker stop spring-app || true'
+        sh 'docker rm spring-app || true'
+        sh "docker run -d --name spring-app -p 83:8080 ${IMAGE_NAME}:latest"
+    }
+}
+
     }
 
     post {
