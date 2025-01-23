@@ -21,27 +21,30 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            steps {
-                script {
-                    try {
-                        sh 'mvn clean test'
-                        sh 'mvn jacoco:report'
-                    } finally {
-                        junit '**/target/surefire-reports/*.xml'
-                        jacoco execPattern: '**/target/jacoco.exec'
-                    }
-                }
-            }
-            post {
-                success {
-                    echo '✅ Unit tests passed successfully!'
-                }
-                failure {
-                    echo '❌ Unit tests failed. Stopping the pipeline.'
-                    error 'Stopping pipeline due to test failures.'
-                }
+    steps {
+        script {
+            try {
+                // ✅ Correct Maven commands
+                sh 'mvn clean test'
+                sh 'mvn verify'  // Ensures JaCoCo reports are generated
+            } finally {
+                // ✅ Always collect test and coverage reports
+                junit '**/target/surefire-reports/*.xml'
+                jacoco execPattern: '**/target/jacoco.exec'
             }
         }
+    }
+    post {
+        success {
+            echo '✅ Unit tests and coverage passed!'
+        }
+        failure {
+            echo '❌ Unit tests failed. Stopping pipeline.'
+            error 'Stopping pipeline due to test failures.'
+        }
+    }
+}
+
 
         stage('SonarQube Analysis') {
             steps {
