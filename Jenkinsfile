@@ -53,11 +53,12 @@ pipeline {
             }
         }
 
-       stage('Push Docker Image') {
+      stage('Push Docker Image') {
     steps {
         script {
             sh '''
-                echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+                #!/bin/bash
+                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                 docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest
                 docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}
                 docker push ${IMAGE_NAME}:latest
@@ -65,6 +66,7 @@ pipeline {
         }
     }
 }
+
 
 
         stage('Deploy Application') {
