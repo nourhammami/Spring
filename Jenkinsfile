@@ -20,16 +20,16 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml' // Collect JUnit test reports
-                }
-            }
+       stage('Unit Tests') {
+    steps {
+        sh 'mvn test'
+    }
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml' // Collect JUnit test reports
         }
+    }
+}
 
         stage('SonarQube Analysis') {
     steps {
