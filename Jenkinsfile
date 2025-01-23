@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     tools {
-        maven 'Default Maven'
+        maven 'Default Maven' // Use the configured Maven installation
     }
 
     environment {
         IMAGE_NAME = 'nour502/spring-app'
-        DOCKER_USERNAME = 'nour502'
-        DOCKER_PASSWORD = 'nourBF98?'
-        SONARQUBE_SERVER = 'SonarQube'
-        SONARQUBE_TOKEN = credentials('sonarqube-token')
+        DOCKER_USERNAME = 'nour502' 
+        DOCKER_PASSWORD = 'nourBF98?' 
+        SONARQUBE_SERVER = 'SonarQube' // Use the name configured in Jenkins
+        SONARQUBE_TOKEN = credentials('sonarqube-token') // Store this token in Jenkins credentials
     }
 
     stages {
@@ -20,16 +20,26 @@ pipeline {
             }
         }
 
-        
-        stage('SonarQube Analysis') {
+        stage('Unit Tests') {
             steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.token=$SONARQUBE_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-                    }
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml' // Collect JUnit test reports
                 }
             }
         }
+
+        stage('SonarQube Analysis') {
+    steps {
+        script {
+            withSonarQubeEnv('SonarQube') {
+                sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.token=$SONARQUBE_TOKEN'
+            }
+        }
+    }
+}
 
         stage('Build with Maven') {
             steps {
@@ -43,7 +53,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+      stage('Push Docker Image') {
             steps {
                 script {
                     sh '''
@@ -55,6 +65,9 @@ pipeline {
                 }
             }
         }
+
+
+
 
         stage('Deploy Application') {
             steps {
