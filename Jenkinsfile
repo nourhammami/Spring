@@ -38,7 +38,7 @@ pipeline {
     steps {
         script {
           withSonarQubeEnv('SonarQube') {
-    sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.login=$SONARQUBE_TOKEN'
+    sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONARQUBE_TOKEN'
 }
 
         }
