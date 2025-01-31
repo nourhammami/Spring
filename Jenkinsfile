@@ -19,11 +19,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/nourhammami/Spring.git'
             }
         }
-        stage('Fix Git Directory') {
-            steps {
-                sh 'git --git-dir=/var/jenkins_home/workspace/SpringPipeline/.git --work-tree=/var/jenkins_home/workspace/SpringPipeline status'
-            }
-        }
+       
 
         stage('Unit Tests') {
             steps {
