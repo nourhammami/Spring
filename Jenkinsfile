@@ -37,9 +37,10 @@ pipeline {
         stage('SonarQube Analysis') {
     steps {
         script {
-            withSonarQubeEnv('SonarQube') {
-                sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://host.docker.internal:9000 -Dsonar.token=$SONARQUBE_TOKEN'
-            }
+           withSonarQubeEnv('SonarQube') {
+    sh 'mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=$SONARQUBE_URL -Dsonar.login=$SONARQUBE_TOKEN'
+}
+
         }
     }
 }
