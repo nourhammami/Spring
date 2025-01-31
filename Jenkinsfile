@@ -13,10 +13,12 @@ pipeline {
         SONARQUBE_TOKEN = credentials('sonarqube-token') // Store this token in Jenkins credentials
     }
 
-    stages {
+   stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/nourhammami/Spring.git'
+                script {
+                    checkout scm
+                }
             }
         }
        
