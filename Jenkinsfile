@@ -14,11 +14,15 @@ pipeline {
     }
 
    stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                script {
-                    checkout scm
-                }
+                git branch: 'main', url: 'https://github.com/nourhammami/Spring.git'
+            }
+        }
+        stage('Verify Git Directory') {
+            steps {
+                sh 'ls -la'  // Check if files are cloned
+                sh 'git status'  // Verify it's a Git repo
             }
         }
        
